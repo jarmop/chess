@@ -3,3 +3,15 @@
   min-height: 100vh;
   background: #373737;
 }
+
+table {
+  border-collapse: collapse;
+}
+
+table,
+td,
+th {
+  background: white;
+  border: 1px solid black;
+  padding: 10px;
+}

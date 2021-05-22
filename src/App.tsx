@@ -1,10 +1,18 @@
 import React from 'react'
+import { Game, getGames } from './api'
 import './App.css'
 import ChessBoard from './ChessBoard'
 import { BOARD_SIZE } from './config'
+import GameList from './GameList'
 import Piece from './Piece'
 
 const App = () => {
+  const [games, setGames] = React.useState<Game[]>([])
+
+  React.useEffect(() => {
+    getGames().then(setGames)
+  }, [setGames])
+
   const blackPawns = []
   for (let i = 0; i < 8; i++) {
     blackPawns.push(<Piece key={i} color="black" title="pawn" x={i} y={1} />)
@@ -38,6 +46,7 @@ const App = () => {
         <Piece color="white" title="knight" x={6} y={7} />
         {whitePawns}
       </svg>
+      <GameList games={games} />
     </div>
   )
 }
