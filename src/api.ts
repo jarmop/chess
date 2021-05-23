@@ -1,3 +1,5 @@
+import mockGames from './mockGames.json'
+
 const MY_USERNAME = 'jarmopih'
 
 const notMe = (username: string) => username !== MY_USERNAME
@@ -67,7 +69,8 @@ const parsePgn = (pgn: string) => {
 const parseGame = (game: any): Game => parsePgn(game.pgn)
 
 export const getGames = () =>
-  fetch('https://api.chess.com/pub/player/jarmopih/games/2021/05')
-    .then((response) => response.json())
-    .then((data): Game[] => data.games.map(parseGame))
-// .then((data): Game[] => [parseGame(data.games[2])])
+  process.env.NODE_ENV === 'development'
+    ? Promise.resolve(mockGames.games.map(parseGame))
+    : fetch('https://api.chess.com/pub/player/jarmopih/games/2021/05')
+        .then((response) => response.json())
+        .then((data): Game[] => data.games.map(parseGame))
