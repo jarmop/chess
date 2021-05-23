@@ -1,12 +1,23 @@
 import React from 'react'
 
-const Moves = ({ moves }: { moves: string[][] }) => (
+const Moves = ({
+  moves,
+  currentMove,
+}: {
+  moves: string[][]
+  currentMove: number
+}) => (
   <table className="Moves">
     <tbody>
-      {moves.map((moveSet, index) => (
-        <tr key={index}>
-          {moveSet.map((move, index) => (
-            <td key={index}>{move}</td>
+      {moves.map((moveSet, i) => (
+        <tr key={i}>
+          {moveSet.map((move, j) => (
+            <td
+              key={j}
+              className={currentMove - 1 === i * 2 + j ? 'selectedMove' : ''}
+            >
+              {move}
+            </td>
           ))}
         </tr>
       ))}

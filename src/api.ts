@@ -1,22 +1,16 @@
+import { MY_USERNAME } from './config'
 import mockGames from './mockGames.json'
 
-const MY_USERNAME = 'jarmopih'
-
-const notMe = (username: string) => username !== MY_USERNAME
-
 export type Game = {
-  endDate: string
-  moves: string[][]
-  opponent: string
-  termination: string
-}
-
-export type Move = {
   black: string
+  endDate: string
+  id: string
+  moves: string[][]
+  termination: string
   white: string
 }
 
-const RELEVANT_PGN_KEYS = ['Black', 'EndDate', 'Termination', 'White']
+const RELEVANT_PGN_KEYS = ['Black', 'EndDate', 'Link', 'Termination', 'White']
 
 const isRelevantPgnKey = (key: string) => RELEVANT_PGN_KEYS.includes(key)
 
@@ -37,13 +31,12 @@ const parsePgnTagPairs = (pgnTagPairs: string) => {
     {}
   )
 
-  const players = [valueByKey.white, valueByKey.black]
-  const opponent = players.filter(notMe).pop() || ''
-
   return {
+    black: valueByKey.black,
     endDate: valueByKey.endDate,
-    opponent,
+    id: valueByKey.link.replace(/.*\//, ''),
     termination: valueByKey.termination,
+    white: valueByKey.white,
   }
 }
 
@@ -71,6 +64,6 @@ const parseGame = (game: any): Game => parsePgn(game.pgn)
 export const getGames = () =>
   process.env.NODE_ENV === 'development'
     ? Promise.resolve(mockGames.games.map(parseGame))
-    : fetch('https://api.chess.com/pub/player/jarmopih/games/2021/05')
+    : fetch(`https://api.chess.com/pub/player/${MY_USERNAME}/games/2021/05`)
         .then((response) => response.json())
         .then((data): Game[] => data.games.map(parseGame))

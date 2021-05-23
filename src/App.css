@@ -28,6 +28,10 @@ tr {
   cursor: pointer;
 }
 
+.GameList tbody tr.selectedGame {
+  background: lightblue;
+}
+
 .Game {
   display: flex;
 }
@@ -35,4 +39,16 @@ tr {
 table.Moves td {
   padding: 2px;
   font-size: 14px;
+}
+
+table.Moves td.selectedMove {
+  background: lightblue;
+}
+
+.player {
+  color: white;
+}
+
+button:hover {
+  cursor: pointer;
 }
