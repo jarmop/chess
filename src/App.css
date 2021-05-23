@@ -11,7 +11,28 @@ table {
 table,
 td,
 th {
-  background: white;
   border: 1px solid black;
+}
+
+tr {
+  background: white;
+}
+
+.GameList th,
+.GameList td {
   padding: 10px;
+}
+
+.GameList tbody tr:hover {
+  background: lightblue;
+  cursor: pointer;
+}
+
+.Game {
+  display: flex;
+}
+
+table.Moves td {
+  padding: 2px;
+  font-size: 14px;
 }
