@@ -135,7 +135,7 @@ export const generateGamePositionsFromMoves = (moves: string[][]) => {
 
       return canMoveTo(piece, x, y, killHappened)
     })
-    indexOfMovedPiece > 0 && newPositions.splice(indexOfMovedPiece, 1)
+    indexOfMovedPiece >= 0 && newPositions.splice(indexOfMovedPiece, 1)
 
     positionsAfterMove.push([
       ...newPositions,
