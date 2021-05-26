@@ -110,11 +110,22 @@ export const generateGamePositionsFromMoves = (moves: string[][]) => {
       moveParts.splice(2, 1)
     }
 
+    let originX: number | undefined
+    if (files.includes(moveParts[2])) {
+      const originFile = moveParts[2]
+      originX = files.indexOf(originFile)
+      moveParts.splice(2, 1)
+    }
+
     const pieceChar = moveParts[2]
     const pieceTitle = pieceCharToTitle(pieceChar)
 
     const indexOfMovedPiece = newPositions.findIndex((piece) => {
-      if (piece.title !== pieceTitle || piece.color !== color) {
+      if (
+        piece.title !== pieceTitle ||
+        piece.color !== color ||
+        (originX && piece.x !== originX)
+      ) {
         return false
       }
       const isUniquePiece = ['king', 'queen'].includes(pieceTitle)
