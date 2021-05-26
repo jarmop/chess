@@ -1,5 +1,4 @@
 import { MY_USERNAME } from './config'
-import mockGames from './mockGames.json'
 
 export type Game = {
   black: string
@@ -61,9 +60,31 @@ const parsePgn = (pgn: string) => {
 
 const parseGame = (game: any): Game => parsePgn(game.pgn)
 
-export const getGames = () =>
-  process.env.NODE_ENV === 'development'
-    ? Promise.resolve(mockGames.games.map(parseGame))
-    : fetch(`https://api.chess.com/pub/player/${MY_USERNAME}/games/2021/05`)
-        .then((response) => response.json())
-        .then((data): Game[] => data.games.map(parseGame))
+const getCacheKey = () => {
+  const today = new Date()
+  today.setMinutes(0, 0, 0)
+  return `games-${today.getTime()}`
+}
+
+const getGamesFromCache = (): Game[] | undefined => {
+  const gamesFromCache = localStorage.getItem(getCacheKey())
+  return gamesFromCache !== null ? JSON.parse(gamesFromCache) : undefined
+}
+
+const storeGamesToCache = (games: Game[]) =>
+  localStorage.setItem(getCacheKey(), JSON.stringify(games))
+
+export const getGames = (): Promise<Game[]> => {
+  const gamesFromCache = getGamesFromCache()
+  if (gamesFromCache !== undefined) {
+    return Promise.resolve(gamesFromCache)
+  }
+
+  return fetch(`https://api.chess.com/pub/player/${MY_USERNAME}/games/2021/05`)
+    .then((response) => response.json())
+    .then((data): Game[] => data.games.map(parseGame))
+    .then((games) => {
+      storeGamesToCache(games)
+      return games
+    })
+}
