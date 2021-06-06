@@ -4,6 +4,8 @@ export const MY_USERNAME = 'jarmopih'
 export const BOARD_SIZE = 500
 export const AMOUNT_OF_SQUARES = 8
 export const SQUARE_SIZE = BOARD_SIZE / AMOUNT_OF_SQUARES
+export const INITIAL_GAME = 0
+export const INITIAL_MOVE = 0
 
 export const DEFAULT_POSITIONS = [
   { color: 'black', title: 'king', x: 4, y: 0 },

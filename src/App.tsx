@@ -5,6 +5,8 @@ import ChessBoard from './ChessBoard'
 import {
   BOARD_SIZE,
   DEFAULT_POSITIONS,
+  INITIAL_GAME,
+  INITIAL_MOVE,
   MOCK_POSITIONS_AFTER_MOVES,
 } from './config'
 import GameList from './GameList'
@@ -34,14 +36,14 @@ const App = () => {
   React.useEffect(() => {
     getGames().then((games) => {
       setGames(games)
-      handleSelectGame(games[0])
+      handleSelectGame(games[INITIAL_GAME])
     })
   }, [setGames])
 
   const handleSelectGame = (game: Game) => {
     selectGame(game)
     setPositionsAfterMove(generateGamePositionsFromMoves(game.moves))
-    setCurrentMove(0)
+    setCurrentMove(INITIAL_MOVE)
   }
 
   const gotoNextMove = () =>
@@ -71,6 +73,9 @@ const App = () => {
           <div>
             <button onClick={gotoPreviousMove}>{'<'}</button>
             <button onClick={gotoNextMove}>{'>'}</button>
+          </div>
+          <div>
+            <a href={selectedGame?.url}>Chess.com</a>
           </div>
         </div>
         {selectedGame !== undefined && (

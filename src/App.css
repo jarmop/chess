@@ -52,3 +52,7 @@ table.Moves td.selectedMove {
 button:hover {
   cursor: pointer;
 }
+
+a {
+  color: lightgreen;
+}

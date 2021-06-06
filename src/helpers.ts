@@ -45,6 +45,53 @@ const canMoveTo = (
   return result
 }
 
+const getPositionsAfterCastling = (
+  currentPositions: Position[],
+  move: string,
+  color: string,
+  isCastlingKingside: boolean
+) => {
+  let newPositions = [...currentPositions]
+
+  const indexOfKing = newPositions.findIndex(
+    (piece) => piece.color === color && piece.title === 'king'
+  )
+  newPositions.splice(indexOfKing, 1)
+  const indexOfRook = newPositions.findIndex((piece) => {
+    if (piece.color !== color || piece.title !== 'rook') {
+      return false
+    }
+    if (isCastlingKingside) {
+      return (
+        (piece.color === 'white' && piece.x === 7 && piece.y === 7) ||
+        (piece.color === 'black' && piece.x === 7 && piece.y === 0)
+      )
+    } else {
+      return (
+        (piece.color === 'white' && piece.x === 0 && piece.y === 7) ||
+        (piece.color === 'black' && piece.x === 0 && piece.y === 0)
+      )
+    }
+  })
+  newPositions.splice(indexOfRook, 1)
+
+  return [
+    ...newPositions,
+    {
+      title: 'king',
+      color: color,
+      x: isCastlingKingside ? 6 : 2,
+      y: color === 'white' ? 7 : 0,
+    },
+    {
+      title: 'rook',
+      color: color,
+      x: isCastlingKingside ? 5 : 3,
+      y: color === 'white' ? 7 : 0,
+    },
+  ]
+}
+
 export const getNextPositions = (
   currentPositions: Position[],
   move: string,
@@ -52,47 +99,17 @@ export const getNextPositions = (
 ) => {
   const isCastlingKingside = move === 'O-O'
   const isCastlingQueenside = move === 'O-O-O'
-  let newPositions = [...currentPositions]
 
   if (isCastlingKingside || isCastlingQueenside) {
-    const indexOfKing = newPositions.findIndex(
-      (piece) => piece.color === color && piece.title === 'king'
+    return getPositionsAfterCastling(
+      currentPositions,
+      move,
+      color,
+      isCastlingKingside
     )
-    newPositions.splice(indexOfKing, 1)
-    const indexOfRook = newPositions.findIndex((piece) => {
-      if (piece.color !== color || piece.title !== 'rook') {
-        return false
-      }
-      if (isCastlingKingside) {
-        return (
-          (piece.color === 'white' && piece.x === 7 && piece.y === 7) ||
-          (piece.color === 'black' && piece.x === 7 && piece.y === 0)
-        )
-      } else {
-        return (
-          (piece.color === 'white' && piece.x === 0 && piece.y === 7) ||
-          (piece.color === 'black' && piece.x === 0 && piece.y === 0)
-        )
-      }
-    })
-    newPositions.splice(indexOfRook, 1)
-
-    return [
-      ...newPositions,
-      {
-        title: 'king',
-        color: color,
-        x: isCastlingKingside ? 6 : 2,
-        y: color === 'white' ? 7 : 0,
-      },
-      {
-        title: 'rook',
-        color: color,
-        x: isCastlingKingside ? 5 : 3,
-        y: color === 'white' ? 7 : 0,
-      },
-    ]
   }
+
+  let newPositions = [...currentPositions]
 
   const moveParts = move.replace(/#|\+/g, '').split('').reverse()
   const rank = parseInt(moveParts[0])

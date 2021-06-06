@@ -7,6 +7,7 @@ export type Game = {
   moves: string[][]
   termination: string
   white: string
+  url: string
 }
 
 const RELEVANT_PGN_KEYS = ['Black', 'EndDate', 'Link', 'Termination', 'White']
@@ -58,7 +59,10 @@ const parsePgn = (pgn: string) => {
   return game
 }
 
-const parseGame = (game: any): Game => parsePgn(game.pgn)
+const parseGame = (game: any): Game => ({
+  ...parsePgn(game.pgn),
+  url: game.url,
+})
 
 const getCacheKey = () => {
   const today = new Date()
