@@ -78,15 +78,25 @@ const getGamesFromCache = (): Game[] | undefined => {
 const storeGamesToCache = (games: Game[]) =>
   localStorage.setItem(getCacheKey(), JSON.stringify(games))
 
+const fetchMonthlyGamesUrls = (): Promise<string[]> =>
+  fetch(`https://api.chess.com/pub/player/${MY_USERNAME}/games/archives`)
+    .then((response) => response.json())
+    .then((data) => data.archives)
+
+const fetchGames = (url: string): Promise<Game[]> =>
+  fetch(url)
+    .then((response) => response.json())
+    .then((data): Game[] => data.games.map(parseGame))
+
 export const getGames = (): Promise<Game[]> => {
   const gamesFromCache = getGamesFromCache()
   if (gamesFromCache !== undefined) {
     return Promise.resolve(gamesFromCache)
   }
 
-  return fetch(`https://api.chess.com/pub/player/${MY_USERNAME}/games/2021/05`)
-    .then((response) => response.json())
-    .then((data): Game[] => data.games.map(parseGame))
+  return fetchMonthlyGamesUrls()
+    .then((monthlyGamesUrls) => Promise.all(monthlyGamesUrls.map(fetchGames)))
+    .then((monthlyGames) => monthlyGames.flat())
     .then((games) => {
       storeGamesToCache(games)
       return games
