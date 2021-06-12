@@ -1,6 +1,7 @@
 import { PositionsAfterMove } from './App'
 
-export const MY_USERNAME = 'jarmopih'
+export const USERNAME_ME = 'jarmopih'
+export const USERNAME_NARODITSKY = 'SenseiDanya'
 export const BOARD_SIZE = 500
 export const AMOUNT_OF_SQUARES = 8
 export const SQUARE_SIZE = BOARD_SIZE / AMOUNT_OF_SQUARES

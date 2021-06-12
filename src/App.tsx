@@ -1,5 +1,5 @@
 import React from 'react'
-import { Game, getGames } from './api'
+import { Game, getMyGames } from './api'
 import './App.css'
 import ChessBoard from './ChessBoard'
 import {
@@ -34,7 +34,7 @@ const App = () => {
     ])
 
   React.useEffect(() => {
-    getGames().then((games) => {
+    getMyGames().then((games) => {
       setGames(games)
       handleSelectGame(games[INITIAL_GAME])
     })

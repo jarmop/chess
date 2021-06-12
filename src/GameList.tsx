@@ -3,8 +3,8 @@ import { Game } from './api'
 
 interface GameListProps {
   games: Game[]
-  selectedGame: Game | undefined
-  onSelectGame: (game: Game) => void
+  selectedGame?: Game | undefined
+  onSelectGame?: (game: Game) => void
 }
 
 const GameList = ({ games, selectedGame, onSelectGame }: GameListProps) => (
@@ -23,7 +23,7 @@ const GameList = ({ games, selectedGame, onSelectGame }: GameListProps) => (
         <tr
           key={index}
           className={game.id === selectedGame?.id ? 'selectedGame' : ''}
-          onClick={() => onSelectGame(game)}
+          onClick={() => onSelectGame && onSelectGame(game)}
         >
           <td>{game.endDate}</td>
           <td>{game.white}</td>

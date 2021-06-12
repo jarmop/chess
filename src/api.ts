@@ -1,4 +1,4 @@
-import { MY_USERNAME } from './config'
+import { USERNAME_ME, USERNAME_NARODITSKY } from './config'
 
 export type Game = {
   black: string
@@ -64,22 +64,22 @@ const parseGame = (game: any): Game => ({
   url: game.url,
 })
 
-const getCacheKey = () => {
+const getCacheKey = (username: string) => {
   const today = new Date()
   today.setMinutes(0, 0, 0)
-  return `games-${today.getTime()}`
+  return `${username}-games-${today.getTime()}`
 }
 
-const getGamesFromCache = (): Game[] | undefined => {
-  const gamesFromCache = localStorage.getItem(getCacheKey())
+const getGamesFromCache = (username: string): Game[] | undefined => {
+  const gamesFromCache = localStorage.getItem(getCacheKey(username))
   return gamesFromCache !== null ? JSON.parse(gamesFromCache) : undefined
 }
 
-const storeGamesToCache = (games: Game[]) =>
-  localStorage.setItem(getCacheKey(), JSON.stringify(games))
+const storeGamesToCache = (username: string, games: Game[]) =>
+  localStorage.setItem(getCacheKey(username), JSON.stringify(games))
 
-const fetchMonthlyGamesUrls = (): Promise<string[]> =>
-  fetch(`https://api.chess.com/pub/player/${MY_USERNAME}/games/archives`)
+const fetchMonthlyGamesUrls = (username: string): Promise<string[]> =>
+  fetch(`https://api.chess.com/pub/player/${username}/games/archives`)
     .then((response) => response.json())
     .then((data) => data.archives)
 
@@ -88,17 +88,21 @@ const fetchGames = (url: string): Promise<Game[]> =>
     .then((response) => response.json())
     .then((data): Game[] => data.games.map(parseGame))
 
-export const getGames = (): Promise<Game[]> => {
-  const gamesFromCache = getGamesFromCache()
+const getGames = (username: string): Promise<Game[]> => {
+  const gamesFromCache = getGamesFromCache(username)
   if (gamesFromCache !== undefined) {
     return Promise.resolve(gamesFromCache)
   }
 
-  return fetchMonthlyGamesUrls()
+  return fetchMonthlyGamesUrls(username)
     .then((monthlyGamesUrls) => Promise.all(monthlyGamesUrls.map(fetchGames)))
     .then((monthlyGames) => monthlyGames.flat())
     .then((games) => {
-      storeGamesToCache(games)
+      storeGamesToCache(username, games)
       return games
     })
 }
+
+export const getMyGames = () => getGames(USERNAME_ME)
+
+export const getNaroditskyGames = () => getGames(USERNAME_NARODITSKY)
